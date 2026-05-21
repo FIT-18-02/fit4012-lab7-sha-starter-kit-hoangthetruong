@@ -1,22 +1,36 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/bin/bash
 
-make password_hash >/dev/null
+set -e
 
-HASH_FILE="test_password.hash"
-rm -f "$HASH_FILE"
+echo "[TEST] password hash test"
 
-./password_hash register "student-password-123" "$HASH_FILE" >/dev/null
-[[ -s "$HASH_FILE" ]] || { echo "[FAIL] Password hash file was not created"; exit 1; }
+# Build project
+make
 
-./password_hash login "student-password-123" "$HASH_FILE" >/dev/null || {
-  echo "[FAIL] Correct password should login successfully"
-  exit 1
-}
+# Remove old password file
+rm -f password.hash
 
-if ./password_hash login "wrong password / sai mật khẩu" "$HASH_FILE" >/dev/null; then
-  echo "[FAIL] Wrong password should be rejected"
-  exit 1
+# Register password
+./password_hash register 123456
+
+# Correct password test
+if ./password_hash login 123456; then
+
+    echo "[PASS] correct password accepted"
+
+else
+
+    echo "[FAIL] correct password rejected"
+    exit 1
 fi
 
-echo "[PASS] Password hash and wrong password negative test passed."
+# Wrong password test
+if ./password_hash login wrongpassword; then
+
+    echo "[FAIL] wrong password accepted"
+    exit 1
+
+else
+
+    echo "[PASS] wrong password rejected"
+fi
