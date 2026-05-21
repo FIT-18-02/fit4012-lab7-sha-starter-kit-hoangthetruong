@@ -26,3 +26,58 @@ Lệnh sử dụng:
 make
 make test
 bash .github/scripts/check_submission.sh
+```
+
+## 3. Kết quả / Result
+
+Hash của chuỗi abc:
+
+```text
+ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad
+```
+
+Hash của file mẫu:
+
+```text
+6bffacf670f0b13347f13c4013cc93714e62707a642f3873e90f5135fca94a95
+```
+
+Kết quả khi file bị sửa:
+
+```text
+[FAIL] File has been modified (tampered)
+```
+
+Kết quả đăng nhập đúng:
+
+```text
+[PASS] Login success
+```
+
+Kết quả đăng nhập sai:
+
+```text
+[FAIL] Login failed: wrong password
+```
+
+Kết quả salted password:
+
+```text
+Different salts create different hashes
+```
+
+## 4. Kết luận / Conclusion
+
+SHA-256 giúp phát hiện thay đổi dữ liệu bằng cách tạo ra giá trị hash cố định cho dữ liệu đầu vào.
+
+Nếu dữ liệu thay đổi dù chỉ một ký tự, hash cũng thay đổi hoàn toàn.
+
+Salt giúp tăng độ an toàn cho mật khẩu vì cùng một mật khẩu sẽ tạo ra các hash khác nhau.
+
+Tuy nhiên SHA-256 quá nhanh nên chưa phù hợp để lưu mật khẩu trong hệ thống thực tế.
+
+Trong thực tế nên dùng:
+
+- Argon2id
+- bcrypt
+- scrypt
