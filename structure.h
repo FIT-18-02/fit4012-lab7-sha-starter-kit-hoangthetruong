@@ -1,5 +1,5 @@
-#ifndef FIT4012_SHA_STRUCTURE_H
-#define FIT4012_SHA_STRUCTURE_H
+#ifndef FIT4012_STRUCTURE_H
+#define FIT4012_STRUCTURE_H
 
 #include <array>
 #include <cstdint>
@@ -7,16 +7,18 @@
 using byte = std::uint8_t;
 using word = std::uint32_t;
 
-// Initial hash values H(0): first 32 bits of the fractional parts
-// of the square roots of the first 8 prime numbers.
-static constexpr std::array<word, 8> H0_INITIAL = {
-    0x6a09e667U, 0xbb67ae85U, 0x3c6ef372U, 0xa54ff53aU,
-    0x510e527fU, 0x9b05688cU, 0x1f83d9abU, 0x5be0cd19U
+constexpr std::array<word, 8> H0_INITIAL = {
+    0x6a09e667U,
+    0xbb67ae85U,
+    0x3c6ef372U,
+    0xa54ff53aU,
+    0x510e527fU,
+    0x9b05688cU,
+    0x1f83d9abU,
+    0x5be0cd19U
 };
 
-// Round constants K[0..63]: first 32 bits of the fractional parts
-// of the cube roots of the first 64 prime numbers.
-static constexpr std::array<word, 64> K256 = {
+constexpr std::array<word, 64> K256 = {
     0x428a2f98U, 0x71374491U, 0xb5c0fbcfU, 0xe9b5dba5U,
     0x3956c25bU, 0x59f111f1U, 0x923f82a4U, 0xab1c5ed5U,
     0xd807aa98U, 0x12835b01U, 0x243185beU, 0x550c7dc3U,
@@ -35,12 +37,8 @@ static constexpr std::array<word, 64> K256 = {
     0x90befffaU, 0xa4506cebU, 0xbef9a3f7U, 0xc67178f2U
 };
 
-inline word ROTR(word x, unsigned int n) {
+inline word rotr(word x, word n) {
     return (x >> n) | (x << (32U - n));
-}
-
-inline word SHR(word x, unsigned int n) {
-    return x >> n;
 }
 
 inline word Ch(word x, word y, word z) {
@@ -52,19 +50,19 @@ inline word Maj(word x, word y, word z) {
 }
 
 inline word Sigma0_256(word x) {
-    return ROTR(x, 2U) ^ ROTR(x, 13U) ^ ROTR(x, 22U);
+    return rotr(x, 2) ^ rotr(x, 13) ^ rotr(x, 22);
 }
 
 inline word Sigma1_256(word x) {
-    return ROTR(x, 6U) ^ ROTR(x, 11U) ^ ROTR(x, 25U);
+    return rotr(x, 6) ^ rotr(x, 11) ^ rotr(x, 25);
 }
 
 inline word sigma0_256(word x) {
-    return ROTR(x, 7U) ^ ROTR(x, 18U) ^ SHR(x, 3U);
+    return rotr(x, 7) ^ rotr(x, 18) ^ (x >> 3);
 }
 
 inline word sigma1_256(word x) {
-    return ROTR(x, 17U) ^ ROTR(x, 19U) ^ SHR(x, 10U);
+    return rotr(x, 17) ^ rotr(x, 19) ^ (x >> 10);
 }
 
-#endif // FIT4012_SHA_STRUCTURE_H
+#endif
