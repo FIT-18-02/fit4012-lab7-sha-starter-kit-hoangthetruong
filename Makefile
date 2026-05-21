@@ -1,54 +1,43 @@
-CXX := g++
-CXXFLAGS := -std=c++17 -Wall -Wextra -pedantic
+CXX = g++
 
-SHA_TARGET := sha256
-FILE_TARGET := file_integrity
-PASS_TARGET := password_hash
-SALT_TARGET := salted_password_hash
+CXXFLAGS = -std=c++17 -Wall -Wextra -pedantic
 
-.PHONY: all clean run test hash-sample file-sample password-sample salted-sample
+TARGET_SHA256 = sha256
+TARGET_FILE = file_integrity
+TARGET_PASSWORD = password_hash
+TARGET_SALTED = salted_password_hash
 
-all: $(SHA_TARGET) $(FILE_TARGET) $(PASS_TARGET) $(SALT_TARGET)
+all: $(TARGET_SHA256) $(TARGET_FILE) $(TARGET_PASSWORD) $(TARGET_SALTED)
 
-$(SHA_TARGET): sha_procedure.cpp sha256_lib.h structure.h
-	$(CXX) $(CXXFLAGS) sha_procedure.cpp -o $(SHA_TARGET)
+# SHA256 main program
+$(TARGET_SHA256): sha_procedure.cpp
+	$(CXX) $(CXXFLAGS) sha_procedure.cpp -o $(TARGET_SHA256)
 
-$(FILE_TARGET): file_integrity.cpp sha256_lib.h structure.h
-	$(CXX) $(CXXFLAGS) file_integrity.cpp -o $(FILE_TARGET)
+# File integrity checker
+$(TARGET_FILE): file_integrity.cpp
+	$(CXX) $(CXXFLAGS) file_integrity.cpp -o $(TARGET_FILE)
 
-$(PASS_TARGET): password_hash.cpp sha256_lib.h structure.h
-	$(CXX) $(CXXFLAGS) password_hash.cpp -o $(PASS_TARGET)
+# Password hashing
+$(TARGET_PASSWORD): password_hash.cpp
+	$(CXX) $(CXXFLAGS) password_hash.cpp -o $(TARGET_PASSWORD)
 
-$(SALT_TARGET): salted_password_hash.cpp sha256_lib.h structure.h
-	$(CXX) $(CXXFLAGS) salted_password_hash.cpp -o $(SALT_TARGET)
+# Salted password hashing
+$(TARGET_SALTED): salted_password_hash.cpp
+	$(CXX) $(CXXFLAGS) salted_password_hash.cpp -o $(TARGET_SALTED)
 
-run: all
-	bash scripts/run_sample.sh
-
-hash-sample: $(SHA_TARGET)
-	./$(SHA_TARGET) --hash-string "hello FIT4012 SHA"
-
-file-sample: $(SHA_TARGET) $(FILE_TARGET)
-	printf "FIT4012 SHA file integrity sample\n" > sample.txt
-	./$(SHA_TARGET) --hash-file sample.txt
-	./$(FILE_TARGET) sample.txt $$(./$(SHA_TARGET) --hash-file sample.txt)
-
-password-sample: $(PASS_TARGET)
-	./$(PASS_TARGET) register "fit4012-demo-password"
-	./$(PASS_TARGET) login "fit4012-demo-password"
-
-salted-sample: $(SALT_TARGET)
-	./$(SALT_TARGET) register "fit4012-demo-password"
-	./$(SALT_TARGET) login "fit4012-demo-password"
-
-test: all
+# Run tests
+test:
 	bash tests/test_sha_compile.sh
 	bash tests/test_known_vectors.sh
 	bash tests/test_file_integrity_tamper.sh
 	bash tests/test_password_hash.sh
 	bash tests/test_salted_password.sh
 
+# Clean build files
 clean:
-	rm -f $(SHA_TARGET) $(FILE_TARGET) $(PASS_TARGET) $(SALT_TARGET)
-	rm -f sample.txt password.hash test_password.hash test_password_salted_1.hash test_password_salted_2.hash
-	rm -rf build
+	rm -f $(TARGET_SHA256)
+	rm -f $(TARGET_FILE)
+	rm -f $(TARGET_PASSWORD)
+	rm -f $(TARGET_SALTED)
+	rm -f *.hash
+	rm -f sample.txt
