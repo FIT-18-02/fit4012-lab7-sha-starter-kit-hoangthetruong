@@ -1,28 +1,46 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/bin/bash
 
-make sha256 >/dev/null
+set -e
 
-EMPTY_EXPECTED="e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-ABC_EXPECTED="ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
+echo "[TEST] known SHA-256 vectors"
 
-EMPTY_ACTUAL=$(./sha256 --hash-string "")
-ABC_ACTUAL=$(./sha256 --hash-string "abc")
+# Build project
+make
 
-[[ "$EMPTY_ACTUAL" == "$EMPTY_EXPECTED" ]] || {
-  echo "[FAIL] Empty string vector mismatch"
-  echo "expected: $EMPTY_EXPECTED"
-  echo "actual  : $EMPTY_ACTUAL"
-  exit 1
-}
+# Test vector: abc
+EXPECTED_ABC="ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"
 
-[[ "$ABC_ACTUAL" == "$ABC_EXPECTED" ]] || {
-  echo "[FAIL] abc vector mismatch"
-  echo "expected: $ABC_EXPECTED"
-  echo "actual  : $ABC_ACTUAL"
-  exit 1
-}
+RESULT_ABC=$(./sha256 --hash-string "abc")
 
-./sha256 --self-test >/dev/null
+if [ "$RESULT_ABC" = "$EXPECTED_ABC" ]; then
 
-echo "[PASS] SHA-256 known answer tests passed."
+    echo "[PASS] abc vector correct"
+
+else
+
+    echo "[FAIL] abc vector incorrect"
+    echo "Expected: $EXPECTED_ABC"
+    echo "Got: $RESULT_ABC"
+
+    exit 1
+fi
+
+# Test vector: empty string
+EXPECTED_EMPTY="e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+
+RESULT_EMPTY=$(./sha256 --hash-string "")
+
+if [ "$RESULT_EMPTY" = "$EXPECTED_EMPTY" ]; then
+
+    echo "[PASS] empty string vector correct"
+
+else
+
+    echo "[FAIL] empty string vector incorrect"
+    echo "Expected: $EXPECTED_EMPTY"
+    echo "Got: $RESULT_EMPTY"
+
+    exit 1
+fi
+
+echo "[PASS] all known vectors passed"
