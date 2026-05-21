@@ -4,12 +4,10 @@
 
 Mục tiêu của bài thực hành là tìm hiểu thuật toán SHA-256 và ứng dụng của nó trong việc:
 
-- băm dữ liệu dạng chuỗi và file
+- băm chuỗi và file
 - kiểm tra toàn vẹn dữ liệu
-- lưu trữ mật khẩu dưới dạng hash
-- sử dụng salt để tăng độ an toàn khi lưu mật khẩu
-
-Ngoài ra, bài lab còn giúp hiểu cơ chế padding và quá trình xử lý khối dữ liệu của SHA-256.
+- lưu mật khẩu dưới dạng hash
+- sử dụng salt để tăng độ an toàn cho mật khẩu
 
 ---
 
@@ -17,13 +15,13 @@ Ngoài ra, bài lab còn giúp hiểu cơ chế padding và quá trình xử lý
 
 Các bước thực hiện:
 
-- Biên dịch chương trình bằng Makefile và CMake.
+- Biên dịch chương trình bằng Makefile.
 - Chạy `sha_procedure.cpp` để băm chuỗi và file.
-- Kiểm thử bằng known answer test vector với chuỗi `abc`.
-- Viết và chạy `file_integrity.cpp` để kiểm tra file có bị thay đổi hay không.
-- Viết và chạy `password_hash.cpp` để lưu và xác thực mật khẩu bằng SHA-256.
-- Viết và chạy `salted_password_hash.cpp` để thêm salt trước khi băm mật khẩu.
-- Chạy các test trong thư mục `tests/` bằng:
+- Kiểm thử SHA-256 bằng known answer test vector.
+- Chạy `file_integrity.cpp` để kiểm tra file bị sửa đổi.
+- Chạy `password_hash.cpp` để kiểm tra mật khẩu đúng/sai.
+- Chạy `salted_password_hash.cpp` để tạo salted password hash.
+- Chạy toàn bộ test bằng:
 
 ```bash
 make test
