@@ -1,46 +1,28 @@
-# FIT4012 - SHA-256 Beginner Repository Report
+# FIT4012 Lab 7 - Báo cáo 1 trang: SHA-256
 
-## 1. Objective
+## 1. Mục tiêu / Objective
 
-The objective of this lab is to understand how the SHA-256 hashing algorithm works and how it is used in practical situations such as:
+Mục tiêu của bài thực hành là tìm hiểu nguyên lý hoạt động của thuật toán SHA-256 và ứng dụng của nó trong:
 
-- hashing strings and files
-- checking file integrity
-- password hashing
-- salted password hashing
+- băm chuỗi dữ liệu
+- kiểm tra toàn vẹn file
+- băm mật khẩu
+- sử dụng salt để tăng độ an toàn khi lưu mật khẩu
 
-This lab also demonstrates why SHA-256 alone is not ideal for real password storage systems.
+Ngoài ra, bài lab còn giúp quan sát trực tiếp quá trình padding và cơ chế hoạt động của SHA-256.
 
 ---
 
-## 2. Method
+## 2. Cách làm / Approach
 
-The SHA-256 implementation was built in C++ using the standard SHA-256 procedure:
+Các bước thực hiện:
 
-- initialize SHA-256 constants and hash state
-- generate the message schedule W[0..63]
-- run 64 compression rounds
-- apply Merkle-Damgård padding
-- convert the final 256-bit result to hexadecimal
-
-Programs included in the repo:
-
-- `sha_procedure.cpp`
-  - hashes input strings or files
-
-- `file_integrity.cpp`
-  - checks whether a file has been modified
-
-- `password_hash.cpp`
-  - stores SHA-256 password hashes
-
-- `salted_password_hash.cpp`
-  - adds random salt before hashing passwords
-
-Main commands used:
+- Biên dịch và chạy `sha_procedure.cpp` bằng Makefile.
+- Kiểm tra SHA-256 bằng known answer test vector với chuỗi `abc`.
+- Viết chương trình `file_integrity.cpp` để kiểm tra file có bị thay đổi hay không.
+- Viết chương trình `password_hash.cpp` để lưu và xác thực hash mật khẩu.
+- Viết chương trình `salted_password_hash.cpp` để thêm salt trước khi băm mật khẩu.
+- Chạy toàn bộ test bằng:
 
 ```bash
-make
-./sha256 --self-test
-./sha256 --hash-string "abc"
 make test
