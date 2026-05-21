@@ -1,23 +1,31 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/bin/bash
 
-make sha256 file_integrity >/dev/null
+set -e
 
-TMP_FILE=$(mktemp)
-trap 'rm -f "$TMP_FILE"' EXIT
+echo "[TEST] file integrity tamper test"
 
-printf "FIT4012 file integrity test\n" > "$TMP_FILE"
-EXPECTED_HASH=$(./sha256 --hash-file "$TMP_FILE")
+# Build project
+make
 
-./file_integrity "$TMP_FILE" "$EXPECTED_HASH" >/dev/null || {
-  echo "[FAIL] File integrity check should pass before tamper"
-  exit 1
-}
+# Create sample file
+printf "FIT4012 SHA sample\n" > sample.txt
 
-printf "tamper: sửa 1 byte / flip 1 byte\n" >> "$TMP_FILE"
-if ./file_integrity "$TMP_FILE" "$EXPECTED_HASH" >/dev/null; then
-  echo "[FAIL] Tamper test should fail after file is changed"
-  exit 1
+# Generate original hash
+ORIGINAL_HASH=$(./sha256 --hash-file sample.txt)
+
+# Verify original file
+./file_integrity sample.txt "$ORIGINAL_HASH"
+
+# Tamper file
+echo "tampered" >> sample.txt
+
+# Verify tampered file should fail
+if ./file_integrity sample.txt "$ORIGINAL_HASH"; then
+
+    echo "[FAIL] tampered file was accepted"
+    exit 1
+
+else
+
+    echo "[PASS] tampered file detected"
 fi
-
-echo "[PASS] Tamper / flip 1 byte negative test passed."
