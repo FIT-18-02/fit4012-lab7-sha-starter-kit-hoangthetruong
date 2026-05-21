@@ -1,34 +1,46 @@
-# FIT4012 Lab 7 - Báo cáo 1 trang: SHA-256
+# FIT4012 - SHA-256 Beginner Repository Report
 
-## 1. Mục tiêu / Objective
+## 1. Objective
 
-Mô tả ngắn gọn mục tiêu của bài thực hành: phân tích thuật toán SHA-256, chạy chương trình băm chuỗi, kiểm tra toàn vẹn file, băm mật khẩu và cải tiến bằng salt.
+The objective of this lab is to understand how the SHA-256 hashing algorithm works and how it is used in practical situations such as:
 
-## 2. Cách làm / Approach
+- hashing strings and files
+- checking file integrity
+- password hashing
+- salted password hashing
 
-Tóm tắt cách nhóm/cá nhân đã thực hiện:
+This lab also demonstrates why SHA-256 alone is not ideal for real password storage systems.
 
-- Biên dịch và chạy `sha_procedure.cpp`.
-- Kiểm thử SHA-256 bằng known answer test vector.
-- Viết/chạy chương trình kiểm tra toàn vẹn file.
-- Viết/chạy chương trình băm mật khẩu.
-- Bổ sung salt để tránh việc hai người có cùng mật khẩu tạo ra cùng hash.
+---
 
-## 3. Kết quả / Result
+## 2. Method
 
-Điền minh chứng chính:
+The SHA-256 implementation was built in C++ using the standard SHA-256 procedure:
 
-- Hash của chuỗi `abc`:
-- Hash của file mẫu trước khi sửa:
-- Kết quả kiểm tra file sau khi sửa nội dung:
-- Kết quả đăng nhập với mật khẩu đúng:
-- Kết quả đăng nhập với mật khẩu sai:
-- Hai bản ghi `salt:hash` của cùng một mật khẩu có giống nhau không?
+- initialize SHA-256 constants and hash state
+- generate the message schedule W[0..63]
+- run 64 compression rounds
+- apply Merkle-Damgård padding
+- convert the final 256-bit result to hexadecimal
 
-## 4. Kết luận / Conclusion
+Programs included in the repo:
 
-Nêu ngắn gọn điều rút ra:
+- `sha_procedure.cpp`
+  - hashes input strings or files
 
-- SHA-256 giúp phát hiện thay đổi dữ liệu như thế nào?
-- Vì sao cần salt khi lưu hash mật khẩu?
-- Vì sao SHA-256 demo trong lab chưa nên dùng trực tiếp cho hệ thống xác thực thật?
+- `file_integrity.cpp`
+  - checks whether a file has been modified
+
+- `password_hash.cpp`
+  - stores SHA-256 password hashes
+
+- `salted_password_hash.cpp`
+  - adds random salt before hashing passwords
+
+Main commands used:
+
+```bash
+make
+./sha256 --self-test
+./sha256 --hash-string "abc"
+make test
