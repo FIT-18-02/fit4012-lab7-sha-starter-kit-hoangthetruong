@@ -1,56 +1,72 @@
 #include "sha256_lib.h"
 
-#include <algorithm>
-#include <cctype>
+#include <fstream>
 #include <iostream>
+#include <stdexcept>
 #include <string>
 
-namespace {
-
-std::string to_lower_hex(std::string text) {
-    std::transform(text.begin(), text.end(), text.begin(), [](unsigned char ch) {
-        return static_cast<char>(std::tolower(ch));
-    });
-    return text;
-}
-
 void print_usage(const char* program_name) {
-    std::cout << "Usage:\n"
-              << "  " << program_name << " <file_path>\n"
-              << "  " << program_name << " <file_path> <expected_sha256_hex>\n";
-}
 
-} // namespace
+    std::cout
+        << "Usage:\n"
+        << "  " << program_name
+        << " <file_path> <expected_hash>\n";
+}
 
 int main(int argc, char* argv[]) {
+
     try {
-        if (argc != 2 && argc != 3) {
+
+        if (argc != 3) {
+
             print_usage(argv[0]);
             return 1;
         }
 
-        const std::string file_path = argv[1];
-        const std::string actual_hash = sha256::calculate_sha256_file(file_path);
+        const std::string file_path =
+            argv[1];
 
-        if (argc == 2) {
-            std::cout << actual_hash << "\n";
+        const std::string expected_hash =
+            argv[2];
+
+        // Calculate current hash
+        const std::string current_hash =
+            sha256::calculate_sha256_file(
+                file_path
+            );
+
+        std::cout
+            << "Current hash:\n"
+            << current_hash
+            << "\n";
+
+        std::cout
+            << "Expected hash:\n"
+            << expected_hash
+            << "\n";
+
+        // Compare hash
+        if (current_hash == expected_hash) {
+
+            std::cout
+                << "[PASS] File integrity verified\n";
+
             return 0;
         }
 
-        const std::string expected_hash = to_lower_hex(argv[2]);
+        std::cout
+            << "[FAIL] File has been modified "
+            << "(tampered)\n";
 
-        if (actual_hash == expected_hash) {
-            std::cout << "[PASS] File integrity OK\n";
-            std::cout << "SHA-256: " << actual_hash << "\n";
-            return 0;
-        }
-
-        std::cout << "[FAIL] File was changed or expected hash is incorrect\n";
-        std::cout << "expected: " << expected_hash << "\n";
-        std::cout << "actual  : " << actual_hash << "\n";
         return 1;
+
     } catch (const std::exception& ex) {
-        std::cerr << "[ERROR] " << ex.what() << "\n";
+
+        std::cerr
+            << "[ERROR] "
+            << ex.what()
+            << "\n";
+
         return 1;
     }
 }
