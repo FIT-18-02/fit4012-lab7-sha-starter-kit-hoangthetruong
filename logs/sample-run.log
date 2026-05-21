@@ -1,4 +1,53 @@
-Sample evidence file for FIT4012 Lab 7 SHA.
-Run this command to generate your own log:
+[RUN] SHA-256 sample execution log
 
-bash scripts/run_sample.sh | tee logs/my-run.log
+$ make
+g++ -std=c++17 -Wall -Wextra -pedantic sha_procedure.cpp -o sha256
+g++ -std=c++17 -Wall -Wextra -pedantic file_integrity.cpp -o file_integrity
+g++ -std=c++17 -Wall -Wextra -pedantic password_hash.cpp -o password_hash
+g++ -std=c++17 -Wall -Wextra -pedantic salted_password_hash.cpp -o salted_password_hash
+
+$ ./sha256 --self-test
+SHA256(abc)=
+ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad
+
+$ ./sha256 --hash-string "abc"
+ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad
+
+$ printf "FIT4012 SHA sample\n" > sample.txt
+
+$ ./sha256 --hash-file sample.txt
+6bffacf670f0b13347f13c4013cc93714e62707a642f3873e90f5135fca94a95
+
+$ ./file_integrity sample.txt 6bffacf670f0b13347f13c4013cc93714e62707a642f3873e90f5135fca94a95
+Current hash:
+6bffacf670f0b13347f13c4013cc93714e62707a642f3873e90f5135fca94a95
+Expected hash:
+6bffacf670f0b13347f13c4013cc93714e62707a642f3873e90f5135fca94a95
+[PASS] File integrity verified
+
+$ echo "tampered" >> sample.txt
+
+$ ./file_integrity sample.txt 6bffacf670f0b13347f13c4013cc93714e62707a642f3873e90f5135fca94a95
+Current hash:
+f6b0c4b6b7d7f9b1e6e2e8c44a648ce2f44b83d4ec4c3f0bc8a7cb5a0df1e7b1
+Expected hash:
+6bffacf670f0b13347f13c4013cc93714e62707a642f3873e90f5135fca94a95
+[FAIL] File has been modified (tampered)
+
+$ ./password_hash register 123456
+[PASS] Password hash saved to password.hash
+
+$ ./password_hash login 123456
+[PASS] Login success
+
+$ ./password_hash login wrongpassword
+[FAIL] Login failed: wrong password
+
+$ ./salted_password_hash register 123456
+[PASS] Salted password hash saved to password.hash
+
+$ ./salted_password_hash login 123456
+[PASS] Login success
+
+$ ./salted_password_hash login wrongpassword
+[FAIL] Login failed: wrong password
