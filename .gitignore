@@ -1,20 +1,38 @@
-# Build outputs
+# Build files
 build/
-cmake-build-*/
-*.o
-*.out
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Executables
 sha256
 file_integrity
 password_hash
 salted_password_hash
 
-# Generated demo files
-sample.txt
-password.hash
-test_password.hash
-test_password_salted_*.hash
+# Object files
+*.o
+*.obj
 
-# OS/editor
+# Logs
+*.log
+
+# Password files
+*.hash
+
+# Temporary files
+*.tmp
+*.temp
+
+# macOS
 .DS_Store
+
+# VS Code
 .vscode/
+
+# CLion
 .idea/
+
+# Windows
+Thumbs.db
