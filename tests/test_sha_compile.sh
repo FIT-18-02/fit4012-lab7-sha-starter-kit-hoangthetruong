@@ -1,14 +1,34 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/bin/bash
 
-g++ -std=c++17 -Wall -Wextra -pedantic sha_procedure.cpp -o sha256
-g++ -std=c++17 -Wall -Wextra -pedantic file_integrity.cpp -o file_integrity
-g++ -std=c++17 -Wall -Wextra -pedantic password_hash.cpp -o password_hash
-g++ -std=c++17 -Wall -Wextra -pedantic salted_password_hash.cpp -o salted_password_hash
+set -e
 
-[[ -x ./sha256 ]] || { echo "[FAIL] Missing sha256 executable"; exit 1; }
-[[ -x ./file_integrity ]] || { echo "[FAIL] Missing file_integrity executable"; exit 1; }
-[[ -x ./password_hash ]] || { echo "[FAIL] Missing password_hash executable"; exit 1; }
-[[ -x ./salted_password_hash ]] || { echo "[FAIL] Missing salted_password_hash executable"; exit 1; }
+echo "[TEST] compile test"
 
-echo "[PASS] SHA programs compile successfully."
+# Clean old binaries
+make clean || true
+
+# Build project
+make
+
+# Check executables
+if [ ! -f sha256 ]; then
+    echo "[FAIL] sha256 executable missing"
+    exit 1
+fi
+
+if [ ! -f file_integrity ]; then
+    echo "[FAIL] file_integrity executable missing"
+    exit 1
+fi
+
+if [ ! -f password_hash ]; then
+    echo "[FAIL] password_hash executable missing"
+    exit 1
+fi
+
+if [ ! -f salted_password_hash ]; then
+    echo "[FAIL] salted_password_hash executable missing"
+    exit 1
+fi
+
+echo "[PASS] all programs compiled successfully"
